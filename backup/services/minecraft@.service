@@ -1,0 +1,27 @@
+[Unit]
+Description=Minecraft Server - %I
+Wants=bungeecord.service
+After=bungeecord.service
+
+[Service]
+User=minecraft
+Group=minecraft
+Nice=5
+#EnvironmentFile=-/var/minecraft/unit.conf
+KillMode=none
+SuccessExitStatus=0 1
+
+ProtectHome=true
+ProtectSystem=full
+PrivateDevices=true
+NoNewPrivileges=true
+PrivateTmp=true
+InaccessibleDirectories=/root /sys /srv -/opt /media -/lost+found
+ReadWriteDirectories=/var/minecraft/server/%I/
+WorkingDirectory=/var/minecraft/server/%I/
+ExecStart=/usr/bin/java -Xmx5G -Xms4G -jar /var/minecraft/server/spigot.jar --noconsole --world-container /var/minecraft/universe/%I --plugins /var/minecraft/plugins/%I/ --commands-settings /var/minecraft/config/%I/commands.yml --spigot-settings /var/minecraft/config/%I/spigot.yml --bukkit-settings /var/minecraft/config/%I/bukkit.yml --config /var/minecraft/config/%I/server.properties --log-append true
+ExecStop=/var/minecraft/util/rcon-stop-server.sh "%I"
+Restart=on-failure
+RestartSec=5
+[Install]
+WantedBy=multi-user.target
